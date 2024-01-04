@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 // Importing route handlers
 const userRoutes = require('./routes/socialUserRoutes');
-const thoughtRoutes = require('./routes/thoughtRoutes');
+const thoughtRoutes = require('./routes/userThoughtRoutes');
 
 // Creating an Express application
 const app = express();
