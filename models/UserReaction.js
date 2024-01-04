@@ -1,4 +1,4 @@
-// models/Reaction.js:
+// models/UserReaction.js.js:
 const mongoose = require('mongoose');
 
 // Define the schema for user reactions
