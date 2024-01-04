@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 // Importing route handlers
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routes/socialUserRoutes');
 const thoughtRoutes = require('./routes/thoughtRoutes');
 
 // Creating an Express application
