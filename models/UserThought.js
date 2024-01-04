@@ -1,4 +1,4 @@
-// models/Thought.js:
+// models/UserThought.js.js:
 const mongoose = require('mongoose');
 const userReactionSchema = require('./UserReaction');
 
