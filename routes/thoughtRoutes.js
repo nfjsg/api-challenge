@@ -1,31 +1,34 @@
-const router = require('express').Router();
+const express = require('express');
 const { Thought, User } = require('../models');
 
-//GET all thoughts
+// Create a router instance
+const router = express.Router();
+
+// Route to get all thoughts
 router.get('/', async (req, res) => {
   try {
     const thoughts = await Thought.find({});
     res.json(thoughts);
-  } catch (err) {
-    res.status(500).json(err);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//GET a single thought by its id
+// Route to get a single thought by its id
 router.get('/:id', async (req, res) => {
   try {
     const thought = await Thought.findById(req.params.id);
     if (!thought) {
-      res.status(404).json({ message: 'No thought found with this id!' });
+      res.status(404).json({ message: 'Thought not found' });
       return;
     }
     res.json(thought);
-  } catch (err) {
-    res.status(500).json(err);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//POST to create a new thought
+// Route to create a new thought
 router.post('/', async (req, res) => {
   try {
     const newThought = await Thought.create(req.body);
@@ -33,12 +36,12 @@ router.post('/', async (req, res) => {
       $push: { thoughts: newThought._id },
     });
     res.json(newThought);
-  } catch (err) {
-    res.status(500).json(err);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//PUT to update a thought by its id
+// Route to update a thought by its id
 router.put('/:id', async (req, res) => {
   try {
     const updatedThought = await Thought.findByIdAndUpdate(
@@ -47,27 +50,26 @@ router.put('/:id', async (req, res) => {
       { new: true }
     );
     res.json(updatedThought);
-  } catch (err) {
-    res.status(500).json(err);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//DELETE to remove a thought by its id
+// Route to delete a thought by its id
 router.delete('/:id', async (req, res) => {
   try {
     const deletedThought = await Thought.findByIdAndDelete(req.params.id);
     if (!deletedThought) {
-      return res
-        .status(404)
-        .json({ message: 'No thought found with this id!' });
+      res.status(404).json({ message: 'Thought not found' });
+      return;
     }
-    res.json({ message: 'Thought successfully deleted', deletedThought });
-  } catch (err) {
-    res.status(500).json({ message: 'Error deleting thought', error: err });
+    res.json({ message: 'Thought deleted successfully', deletedThought });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//POST to create a reaction stored in a single thought's reactions array
+// Route to add a reaction to a thought
 router.post('/:thoughtId/reactions', async (req, res) => {
   try {
     const thought = await Thought.findByIdAndUpdate(
@@ -77,19 +79,16 @@ router.post('/:thoughtId/reactions', async (req, res) => {
     );
 
     if (!thought) {
-      return res
-        .status(404)
-        .json({ message: 'No thought found with this id!' });
+      res.status(404).json({ message: 'Thought not found' });
+      return;
     }
     res.json({ message: 'Reaction added successfully', thought });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: 'Error adding reaction', error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//DELETE to pull and remove a reaction by the reaction's id value
+// Route to remove a reaction from a thought
 router.delete('/:thoughtId/reactions/:reactionId', async (req, res) => {
   try {
     const thought = await Thought.findByIdAndUpdate(
@@ -98,16 +97,14 @@ router.delete('/:thoughtId/reactions/:reactionId', async (req, res) => {
       { new: true }
     );
     if (!thought) {
-      return res
-        .status(404)
-        .json({ message: 'No thought found with this id!' });
+      res.status(404).json({ message: 'Thought not found' });
+      return;
     }
     res.json({ message: 'Reaction removed successfully', thought });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: 'Error removing reaction', error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+// Export the router
 module.exports = router;
