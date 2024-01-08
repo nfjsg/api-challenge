@@ -1,55 +1,79 @@
 const mongoose = require('mongoose');
 const { User, Thought } = require('../models');
 
-mongoose.connect('mongodb://127.0.0.1:27017/socialNetworkDB');
+async function establishDatabaseConnection() {
+  try {
+    await mongoose.connect('mongodb://127.0.0.1:27017/socialNetworkDB');
+    console.log('Successfully connected to the database');
+  } catch (error) {
+    console.error('Failed to establish a connection to the database:', error.message);
+  }
+}
 
-const user = [
+const usersData = [
   {
-    username: 'Slippery Pete',
-    email: 'Pete@example.com',
+    username: 'AdventureSeeker23',
+    email: 'Seeker@example.com',
     thoughts: [],
     friends: [],
   },
   {
-    username: 'Wayne',
-    email: 'Wayne@example.com',
+    username: 'TechEnthusiast',
+    email: 'TechFan@example.com',
     thoughts: [],
     friends: [],
   },
   {
-    username: 'Nova',
-    email: 'Nova@example.com',
+    username: 'NatureExplorer',
+    email: 'Explorer@example.com',
     thoughts: [],
     friends: [],
   },
 ];
 
-const thoughts = [
+const thoughtsData = [
   {
-    thoughtText: 'I really like playing frisbee.',
-    username: 'Slippery Pete',
+    thoughtText: 'Expressing my passion for adventurous activities.',
+    username: 'AdventureSeeker23',
     reactions: [],
   },
   {
-    thoughtText: 'Eating random stuff on the ground is the best.',
-    username: 'Wayne',
+    thoughtText: 'Exploring the wonders of technology.',
+    username: 'TechEnthusiast',
     reactions: [],
   },
   {
-    thoughtText: 'I like playing tug of war.',
-    username: 'Nova',
+    thoughtText: 'Appreciating the beauty of nature.',
+    username: 'NatureExplorer',
     reactions: [],
   },
 ];
 
-const seedDB = async () => {
-  await User.deleteMany({});
-  await Thought.deleteMany({});
-  await User.insertMany(user);
-  await Thought.insertMany(thoughts);
-  console.log('Database seeded!');
-};
+async function seedDatabaseEntries() {
+  try {
+    await User.deleteMany({});
+    await Thought.deleteMany({});
+    await User.insertMany(usersData);
+    await Thought.insertMany(thoughtsData);
+    console.log('Database entries successfully seeded!');
+  } catch (error) {
+    console.error('Error while seeding the database entries:', error.message);
+  }
+}
 
-seedDB().then(() => {
-  mongoose.connection.close();
-});
+async function concludeDatabaseConnection() {
+  try {
+    await mongoose.connection.close();
+    console.log('Database connection successfully closed');
+  } catch (error) {
+    console.error('Error while closing the database connection:', error.message);
+  }
+}
+
+async function seedAndConclude() {
+  await establishDatabaseConnection();
+  await seedDatabaseEntries();
+  await concludeDatabaseConnection();
+}
+
+seedAndConclude();
